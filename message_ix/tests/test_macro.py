@@ -191,6 +191,37 @@ def test_calc_price(westeros_solved):
     assert np.isclose(obs, exp).all()
 
 
+# Testing how macro handles zero values in PRICE_COMMODITY
+def test_calc_price_zero(westeros_solved):
+    s = westeros_solved
+    clone = s.clone(scenario='low_demand', keep_solution=False)
+    clone.remove_solution()
+    clone.check_out()
+    # Lowering demand in the first year
+    clone.add_par('demand', ['Westeros', 'light', 'useful', 700, 'year'],
+                  10, 'GWa')
+    # Making investment and var cost zero for delivering light
+    clone.add_par('inv_cost', ['Westeros', 'bulb', 700], 0, 'USD/kW')
+    for y in [690, 700]:
+        clone.add_par('var_cost', ['Westeros', 'grid', y, 700, 'standard',
+                                   'year'], 0, 'USD/kWa')
+
+    clone.commit('demand reduced and zero cost for bulb')
+    clone.solve()
+    price = clone.var('PRICE_COMMODITY')
+    # Assert if there is no zero price (to make sure MACRO receives 0 price)
+    assert not (np.isclose(0, price['lvl']).any())
+    c = macro.Calculate(clone, W_DATA_PATH)
+    c.read_data()
+    try:
+        c._price()
+    except AssertionError as error:
+        # To make sure the right error message is raised in macro.py
+        assert ('0-price found in MESSAGE variable PRICE_COMMODITY' in error)
+    else:
+        raise Exception('No error raised in macro.py with zero price')
+
+
 def test_calc_demand(westeros_solved):
     s = westeros_solved
     c = macro.Calculate(s, W_DATA_PATH)
