@@ -31,7 +31,7 @@ FOR (ctr = 1 TO max_it BY 1,
 
 $INCLUDE MACRO/macro_solve.gms
 
-demand_new(node_macro,sector,year) = PHYSENE.L(node_macro, sector, year) * 1000 ;
+demand_new(node_macro,sector,year) = PHYSENE.L(node_macro, sector, year) ;
 aeei_correction(node_macro,sector,year) = 0 ;
 growth_correction(node_macro,year) = 0 ;
 
@@ -41,7 +41,7 @@ demand_new(node_macro,sector,year) = demand_scale(node_macro,sector,year) * dema
 
 If (mod(ctr, 2) eq 0,
 * calculate correction factor for labour force growth rate and apply for next iteration of MACRO
-    gdp_mer_macro(node_macro,year) = (I.L(node_macro,year) + C.L(node_macro,year) + EC.L(node_macro,year)) * 1000 ;
+    gdp_mer_macro(node_macro,year) = I.L(node_macro,year) + C.L(node_macro,year) + EC.L(node_macro,year) ;
     gdp_scale(node_macro,year) = gdp_mer_macro(node_macro,year)/gdp_calibrate(node_macro,year) ;
     growth_correction(node_macro,year) $ (NOT macro_base_period(year)) = SUM(year2 $ seq_period(year2,year), ((gdp_calibrate(node_macro,year)/gdp_calibrate(node_macro,year2))**(1/duration_period(year)))
                                                                                                            - ((gdp_mer_macro(node_macro,year)/gdp_mer_macro(node_macro,year2))**(1/duration_period(year))) ) ;
@@ -65,7 +65,7 @@ LOOP(year $ (NOT macro_base_period(year)),
     growth_factor(node_macro, year) = SUM(year2$( seq_period(year2,year) ), growth_factor(node_macro, year2) * (1 + grow(node_macro, year))**(duration_period(year))) ;
 ) ;
 
-potential_gdp(node_macro, year) = sum(macro_base_period, historical_gdp(node_macro, macro_base_period)/1000) * growth_factor(node_macro, year) ;
+potential_gdp(node_macro, year) = sum(macro_base_period, historical_gdp(node_macro, macro_base_period)) * growth_factor(node_macro, year) ;
 
 * calculation of cumulative effect of AEEI over time
 aeei_factor(node_macro, sector, macro_initial_period) = 1;

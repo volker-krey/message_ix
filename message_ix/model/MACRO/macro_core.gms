@@ -150,10 +150,10 @@ EQUATIONS
 UTILITY_FUNCTION..
 UTILITY =E=
 SUM(node_active,
-    1000 * (SUM(year $ (NOT macro_base_period(year) AND NOT last_period(year)),
+            SUM(year $ (NOT macro_base_period(year) AND NOT last_period(year)),
                 udf(node_active, year) * LOG(C(node_active, year)) * duration_period(year))
           + SUM(year $ last_period(year),
-                udf(node_active, year) * LOG(C(node_active, year)) * (duration_period(year) + 1/finite_time_corr(node_active, year))))
+                udf(node_active, year) * LOG(C(node_active, year)) * (duration_period(year) + 1/finite_time_corr(node_active, year)))
 )
 ;
 
@@ -284,9 +284,9 @@ PRODENE(node_active, sector, year) * aeei_factor(node_active, sector, year)
 
 COST_ENERGY(node_active, year) $ (NOT macro_base_period(year))..
 EC(node_active, year) =E=
-(total_cost(node_active, year)/1000
-+ SUM(sector, eneprice(node_active, sector, year) * 1E-3 * (PHYSENE(node_active, sector, year) - enestart(node_active, sector, year)))
-+ SUM(sector, eneprice(node_active, sector, year) * 1E-3 / enestart(node_active, sector, year) * (PHYSENE(node_active, sector, year) - enestart(node_active, sector, year)) * (PHYSENE(node_active, sector, year) - enestart(node_active, sector, year))))
+(total_cost(node_active, year)
++ SUM(sector, eneprice(node_active, sector, year) * (PHYSENE(node_active, sector, year) - enestart(node_active, sector, year)))
++ SUM(sector, eneprice(node_active, sector, year) / enestart(node_active, sector, year) * (PHYSENE(node_active, sector, year) - enestart(node_active, sector, year)) * (PHYSENE(node_active, sector, year) - enestart(node_active, sector, year))))
 ;
 
 ***

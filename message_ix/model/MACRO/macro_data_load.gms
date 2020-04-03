@@ -170,7 +170,7 @@ DISPLAY node_macro, node_order ;
 * ------------------------------------------------------------------------------
 
 * useful energy/service demand levels from MESSAGE get mapped onto MACRO sector structure
-enestart(node_macro,sector,year) = demand_MESSAGE(node_macro,sector,year) / 1000;
+enestart(node_macro,sector,year) = demand_MESSAGE(node_macro,sector,year);
 * useful energy/service demand prices from MESSAGE get mapped onto MACRO sector structure
 eneprice(node_macro,sector,year) = price_MESSAGE(node_macro,sector,year) ;
 * total energy system costs by node and time
@@ -197,7 +197,7 @@ LOOP(year $ (NOT macro_base_period(year)),
 
 PARAMETER potential_gdp(node, year_all) ;
 
-potential_gdp(node_macro, year) = sum(macro_base_period, historical_gdp(node_macro,macro_base_period)/1000) * growth_factor(node_macro, year) ;
+potential_gdp(node_macro, year) = sum(macro_base_period, historical_gdp(node_macro,macro_base_period)) * growth_factor(node_macro, year) ;
 
 DISPLAY growth_factor, potential_gdp ;
 
@@ -242,7 +242,7 @@ DISPLAY labor, newlab, udf;
 
 ecst0(node_macro) = sum(macro_base_period, total_cost(node_macro,macro_base_period)) ;
 
-gdp_base(node_macro) = sum(macro_base_period, historical_gdp(node_macro,macro_base_period) / 1000) ;
+gdp_base(node_macro) = sum(macro_base_period, historical_gdp(node_macro,macro_base_period)) ;
 
 k0(node_macro) = kgdp(node_macro) * gdp_base(node_macro) ;
 
@@ -251,7 +251,7 @@ LOOP(macro_base_period,
 * VK, 08 April 2008: avoid negative starting values as this causes error in program execution
      i0(node_macro) = (k0(node_macro) * (grow(node_macro, macro_base_period) + depr(node_macro)))$(k0(node_macro) * (grow(node_macro, macro_base_period) + depr(node_macro)) > 0) + epsilon ;
 );
-c0(node_macro) = gdp_base(node_macro) - i0(node_macro) - ecst0(node_macro)/1000 ;
+c0(node_macro) = gdp_base(node_macro) - i0(node_macro) - ecst0(node_macro) ;
 y0(node_macro) = gdp_base(node_macro) ;
 
 DISPLAY ecst0, k0, i0, c0, y0 ;
