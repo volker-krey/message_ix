@@ -400,7 +400,15 @@ COST_ACCOUNTING_NODAL(node, year)..
             AND cat_year(type_year,year) ),
         emission_scaling(type_emission,emission)
         * tax_emission(node,type_emission,type_tec,type_year)
-        * EMISS(node,emission,type_tec,year) )
+        * EMISS(node,emission,type_tec,year)
+* emission taxes expansion for GWP*
+         + SUM( (year_all)$( NOT SAMEAS(year, year_all) ),
+             emission_diff_scaling(type_emission,emission,year,year_all)
+             * tax_emission(node,type_emission,type_tec,type_year)
+             * ( EMISS(node,emission,type_tec,year_all)$( year(year_all) )
+                 + historical_emission(node,emission,type_tec,year_all) )
+           )
+      )
 * cost terms from land-use model emulator (only includes valid node-land_scenario-year combinations)
     + SUM(land_scenario$( land_cost(node,land_scenario,year) ),
         land_cost(node,land_scenario,year) * LAND(node,land_scenario,year) )
@@ -1582,7 +1590,7 @@ NEW_CAPACITY_CONSTRAINT_UP(node,inv_tec,year)$( map_tec(node,inv_tec,year)
 ***
 NEW_CAPACITY_SOFT_CONSTRAINT_UP(node,inv_tec,year)$( soft_new_capacity_up(node,inv_tec,year) )..
     CAP_NEW_UP(node,inv_tec,year) =L=
-        SUM(year2$( seq_period(year2,year) ), 
+        SUM(year2$( seq_period(year2,year) ),
             CAP_NEW(node,inv_tec,year2)) $ (NOT first_period(year))
       + SUM(year_all2$( seq_period(year_all2,year) ),
             historical_new_capacity(node,inv_tec,year_all2)) $ first_period(year)
@@ -1646,7 +1654,7 @@ NEW_CAPACITY_SOFT_CONSTRAINT_LO(node,inv_tec,year)$( soft_new_capacity_lo(node,i
     CAP_NEW_LO(node,inv_tec,year) =L=
         SUM(year2$( seq_period(year2,year) ),
             CAP_NEW(node,inv_tec,year2) ) $ (NOT first_period(year))
-      + SUM(year_all2$( seq_period(year_all2,year) ), 
+      + SUM(year_all2$( seq_period(year_all2,year) ),
             historical_new_capacity(node,inv_tec,year_all2) ) $ first_period(year)
 ;
 
