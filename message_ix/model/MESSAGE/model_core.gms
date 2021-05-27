@@ -402,11 +402,11 @@ COST_ACCOUNTING_NODAL(node, year)..
         * tax_emission(node,type_emission,type_tec,type_year)
         * EMISS(node,emission,type_tec,year)
 * emission taxes expansion for GWP*
-         + SUM( (year_all)$( NOT SAMEAS(year, year_all) ),
-             emission_diff_scaling(type_emission,emission,year,year_all)
+         + SUM( (year_all2)$( NOT SAMEAS(year, year_all2) ),
+             emission_diff_scaling(type_emission,emission,year,year_all2)
              * tax_emission(node,type_emission,type_tec,type_year)
-             * ( EMISS(node,emission,type_tec,year_all)$( year(year_all) )
-                 + historical_emission(node,emission,type_tec,year_all) )
+             * ( EMISS(node,emission,type_tec,year_all2)$( year(year_all2) )
+                 + historical_emission(node,emission,type_tec,year_all2) )
            )
       )
 * cost terms from land-use model emulator (only includes valid node-land_scenario-year combinations)
