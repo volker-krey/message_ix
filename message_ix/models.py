@@ -11,7 +11,7 @@ from .macro import MACRO_ITEMS
 #: Solver options used by :meth:`message_ix.Scenario.solve`.
 DEFAULT_CPLEX_OPTIONS = {
     "advind": 0,
-    "lpmethod": 2,
+    "lpmethod": 4,
     "threads": 4,
     "epopt": 1e-6,
 }
@@ -117,8 +117,8 @@ MESSAGE_ITEMS = {
     "is_bound_emission_pool": dict(
         ix_type="set", idx_sets=["node", "type_emission", "type_tec", "year"]
     ),
-    "is_emission_sink": dict(
-        ix_type="set", idx_sets=["node", "type_emission", "type_tec", "year"]
+    "is_emission_sink_rate": dict(
+        ix_type="set", idx_sets=["node", "emission", "type_tec", "year"]
     ),
     "level_renewable": dict(ix_type="set", idx_sets=["level"]),
     "level_resource": dict(ix_type="set", idx_sets=["level"]),
@@ -176,7 +176,7 @@ MESSAGE_ITEMS = {
     "emission_factor": item("par", "nl t yv ya m e"),
     "emission_scaling": item("par", "type_emission e"),
     "emission_sink_rate": dict(
-        ix_type="par", idx_sets=["node", "type_emission", "type_tec", "year"]
+        ix_type="par", idx_sets=["node", "emission", "type_tec", "year"]
     ),
     "fix_cost": item("par", "nl t yv ya"),
     "fixed_activity": item("par", "nl t yv ya m h"),
@@ -199,7 +199,7 @@ MESSAGE_ITEMS = {
         ix_type="par", idx_sets=["node", "type_emission", "type_tec", "type_year"]
     ),
     "historical_emission_pool": dict(
-        ix_type="par", idx_sets=["node", "type_emission", "type_tec", "year"]
+        ix_type="par", idx_sets=["node", "emission", "type_tec", "year"]
     ),
     "historical_extraction": item("par", "n c g y"),
     "historical_gdp": dict(ix_type="par", idx_sets=["node", "year"]),
